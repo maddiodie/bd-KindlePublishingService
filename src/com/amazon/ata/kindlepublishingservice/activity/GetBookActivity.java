@@ -47,8 +47,10 @@ public class GetBookActivity {
 
     public GetBookResponse execute(final GetBookRequest request) {
         CatalogItemVersion catalogItem = catalogDao.getBookFromCatalog(request.getBookId());
+
         List<BookRecommendation> recommendations = recommendationServiceClient.getBookRecommendations(
             BookGenre.valueOf(catalogItem.getGenre().name()));
+
         return GetBookResponse.builder()
             .withBook(CatalogItemConverter.toBook(catalogItem))
             .withRecommendations(RecommendationsCoralConverter.toCoral(recommendations))

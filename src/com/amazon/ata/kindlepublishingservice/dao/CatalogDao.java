@@ -2,12 +2,9 @@ package com.amazon.ata.kindlepublishingservice.dao;
 
 import com.amazon.ata.kindlepublishingservice.dynamodb.models.CatalogItemVersion;
 import com.amazon.ata.kindlepublishingservice.exceptions.BookNotFoundException;
-import com.amazon.ata.kindlepublishingservice.publishing.KindleFormattedBook;
-import com.amazon.ata.kindlepublishingservice.utils.KindlePublishingUtils;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import javax.inject.Inject;
@@ -46,7 +43,23 @@ public class CatalogDao {
         return book;
     }
 
-    // Returns null if no version exists for the provided bookId
+
+    public void removeBookFromCatalog(String bookId) {
+        // todo: mt1
+        CatalogItemVersion book = getLatestVersionOfBook(bookId);
+
+        if (book == null) {
+            throw new BookNotFoundException(String
+                    .format("No book found for id: %s", bookId));
+        }
+        // this could also include being inActive as well
+        //  ... <(book == null || book.isInactive())>
+
+        // todo
+        //  using a dynamodb object, update the book just fetched to false for isActive
+    }
+
+    // returns null if no version exists for the provided bookId
     private CatalogItemVersion getLatestVersionOfBook(String bookId) {
         CatalogItemVersion book = new CatalogItemVersion();
         book.setBookId(bookId);
