@@ -1,1 +1,83 @@
-PARTICIPANTS: use this file for creating the class diagram in mastery task 01
+@startuml
+!pragma layout smetana
+
+class GetBookActivityClass {
+    - recommendationServiceClient : RecommendationServiceClient
+    - catalogDao : CatalogDao
+
+    + execute(request : GetBookRequest) : GetBookResponse
+}
+
+class CatalogDao {
+    - dynamoDbMapper : DynamoDBMapper
+
+    + getBookFromCatalog(bookId : String) : CatalogItemVersion
+    - getLatestVersionOfBook(bookId : String) : CatalogItemVersion
+}
+
+class CatalogItemVersion {
+    - bookId : String
+    - version : int
+    - inactive : boolean
+    - title : String
+    - author : String
+    - text : String
+    - genre : BookGenre
+}
+
+class RecommendationServiceClient {
+    - recommendationServiceClient : RecommendationServiceClient
+
+    + getBookRecommendations(genre BookGenre) : List<BookRecommendation>
+}
+
+class GetPublishingStatusActivityClass {
+    + execute(getPublishingStatusRequest : GetPublishingStatusRequest) : GetPublishingStatusResponse
+}
+
+class RemoveBookFromCatalogActivity {
+    + execute(removeBookFromCatalogRequest : RemoveBookFromCatalogRequest) : RemoveBookFromCatalogResponse
+}
+
+class SubmitBookForPublishingActivity {
+    - publishingStatusDao : PublishingStatusDao
+
+    + execute(request : SubmitBookForPublishingRequest) : SubmitBookForPublishingResponse
+}
+
+class PublishingStatusDao {
+    - dynamoDbMapper : DynamoDBMapper
+
+    + setPublishingStatus(publishingRecordId : String, publishingRecordStatus : PublishingRecordStatus, bookId : String) : PublishingStatusItem
+}
+
+class PublishingStatusItem {
+    - publishingRecordId : String
+    - status : PublishingRecordStatus
+    - statusMessage : String
+    - bookId : String
+}
+
+class BookNotFoundException {
+    + BookNotFoundException(message : String)
+    + BookNotFoundException(message : String, cause : Throwable)
+}
+
+class PublishingStatusNotFoundException {
+    + PublishingStatusNotFoundException(message : String)
+    + PublishingStatusNotFoundException(message : String), cause : Throwable)
+}
+
+
+
+
+GetBookActivityClass --> CatalogDao
+GetBookActivityClass --> RecommendationServiceClient
+
+SubmitBookForPublishingActivity --> PublishingStatusDao
+
+CatalogDao --> CatalogItemVersion
+
+PublishingStatusDao --> PublishingStatusItem
+
+@enduml

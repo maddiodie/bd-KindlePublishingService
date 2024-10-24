@@ -27,7 +27,8 @@ public class Controller {
         return null;
     }
 
-    @PostMapping(value = "/books", consumes = {"application/json"}, produces = {"application/json"})
+    @PostMapping(value = "/books", consumes = {"application/json"}, produces
+            = {"application/json"})
     public ResponseEntity<?> submitBookForPublishing(@Valid @RequestBody Book book) {
         return null;
     }
