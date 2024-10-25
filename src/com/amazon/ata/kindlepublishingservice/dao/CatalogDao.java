@@ -52,8 +52,8 @@ public class CatalogDao {
             throw new BookNotFoundException(String
                     .format("No book found for id: %s", bookId));
         }
-        // this could also include being inActive as well
-        //  ... <(book == null || book.isInactive())>
+
+        // you could write another method that just gets a book based off of the bookId
 
         // todo
         //  using a dynamodb object, update the book just fetched to false for isActive
