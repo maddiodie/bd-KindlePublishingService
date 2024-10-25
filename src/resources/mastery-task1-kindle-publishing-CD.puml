@@ -1,7 +1,7 @@
 @startuml
 !pragma layout smetana
 
-class GetBookActivityClass {
+class GetBookActivity {
     - recommendationServiceClient : RecommendationServiceClient
     - catalogDao : CatalogDao
 
@@ -16,8 +16,8 @@ class CatalogDao {
 }
 
 class CatalogItemVersion {
-    - bookId : String
-    - version : int
+    @DynamoDBHashKey bookId : String
+    @DynamoDBRangeKey version : int
     - inactive : boolean
     - title : String
     - author : String
@@ -25,8 +25,8 @@ class CatalogItemVersion {
     - genre : BookGenre
 }
 
-class RecommendationServiceClient {
-    - recommendationServiceClient : RecommendationServiceClient
+class RecommendationsServiceClient {
+    - recommendationsServiceClient : RecommendationsServiceClient
 
     + getBookRecommendations(genre BookGenre) : List<BookRecommendation>
 }
@@ -52,11 +52,19 @@ class PublishingStatusDao {
 }
 
 class PublishingStatusItem {
-    - publishingRecordId : String
-    - status : PublishingRecordStatus
+    @DynamoDBHashKey publishingRecordId : String
+    @DynamoDBRangeKey status : PublishingRecordStatus
     - statusMessage : String
     - bookId : String
 }
+
+note right of PublishingStatusItem::publishingRecordId
+  Partition Key
+end note
+
+note right of PublishingStatusItem::status
+  Partition Key
+end note
 
 class BookNotFoundException {
     + BookNotFoundException(message : String)
@@ -68,15 +76,13 @@ class PublishingStatusNotFoundException {
     + PublishingStatusNotFoundException(message : String), cause : Throwable)
 }
 
-
-
-
-GetBookActivityClass --> CatalogDao
-GetBookActivityClass --> RecommendationServiceClient
+GetBookActivity --> CatalogDao
+GetBookActivity --> RecommendationsServiceClient
 
 SubmitBookForPublishingActivity --> PublishingStatusDao
 
 CatalogDao --> CatalogItemVersion
+CatalogDao -> BookNotFoundException
 
 PublishingStatusDao --> PublishingStatusItem
 
