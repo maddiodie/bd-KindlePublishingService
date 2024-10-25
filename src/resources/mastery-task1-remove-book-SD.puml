@@ -3,25 +3,33 @@
 
 actor Client
 participant "Load Balancer/ESC" as ESC
-participant "RemoveBookFromCatalogActivity" as Activity
-participant "CatalogDao" as DAO
+participant RemoveBookFromCatalogActivity
+participant CatalogDao
 database "DynamoDB" as DB
 
 Client -> ESC : HTTP request
-ESC -> Activity : execute(RemoveBookFromCatalogRequest)
-Activity -> DAO : removeBookFromCatalog(bookId)
-DAO -> DB : update isActive variable to false using bookId
+ESC -> RemoveBookFromCatalogActivity : execute(RemoveBookFromCatalogRequest)
+RemoveBookFromCatalogActivity -> CatalogDao : removeBookFromCatalog(bookId)
+CatalogDao -> DB : update isActive variable to false using bookId
 
-alt if bookId does not exist, or it's already marked as false for isActive
-DAO -> Activity : throw BookNotFoundException
-Activity -> ESC : transform to KindlePublishingClientException
+alt if bookId does not exist
+CatalogDao -> RemoveBookFromCatalogActivity : throw BookNotFoundException
+RemoveBookFromCatalogActivity -> ESC : transform to KindlePublishingClientException
 ESC -> Client : 400 response
 else otherwise, continue
 end
 
-DB -> DAO : ???
-DAO -> Activity : ???
-Activity -> ESC : return RemoveBookFromCatalogResponse
-ESC -> Client : 200 response (with data???)
+alt if CatalogItemVersion is already marked as inactive
+CatalogDao -> RemoveBookFromCatalogActivity : throw BookInactiveException
+RemoveBookFromCatalogActivity -> ESC : transform to KindlePublishingClientException
+ESC -> Client : 400 response
+else otherwise, continue
+end
+
+DB -> CatalogDao : return soft deleted book
+CatalogDao -> RemoveBookFromCatalogActivity : return CatalogItemVersion
+RemoveBookFromCatalogActivity -> RemoveBookFromCatalogActivity : create and populate RemoveBookFromCatalogResponse
+RemoveBookFromCatalogActivity -> ESC : return RemoveBookFromCatalogResponse
+ESC -> Client : 200 response
 
 @enduml

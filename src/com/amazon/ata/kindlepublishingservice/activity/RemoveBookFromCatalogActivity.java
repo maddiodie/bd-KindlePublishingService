@@ -25,7 +25,7 @@ public class RemoveBookFromCatalogActivity {
 
     public RemoveBookFromCatalogResponse execute(final RemoveBookFromCatalogRequest request) {
         // todo: mt1
-        CatalogItemVersion catalogItem = catalogDao.getBookFromCatalog(request.getBookId());
+        CatalogItemVersion catalogItem = catalogDao.removeBookFromCatalog(request.getBookId());
 
         // todo: need to finish implementing the RemoveBookFromCatalogResponse class
 

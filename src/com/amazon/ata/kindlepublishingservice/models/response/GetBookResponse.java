@@ -50,7 +50,9 @@ public class GetBookResponse {
         this.recommendations = builder.recommendations;
     }
 
-    public static Builder builder() {return new Builder();}
+    public static Builder builder() {
+        return new Builder();
+    }
 
     public static final class Builder {
         private Book book;
@@ -70,6 +72,8 @@ public class GetBookResponse {
             return this;
         }
 
-        public GetBookResponse build() { return new GetBookResponse(this); }
+        public GetBookResponse build() {
+            return new GetBookResponse(this);
+        }
     }
 }
