@@ -2,6 +2,7 @@ package com.amazon.ata.kindlepublishingservice.activity;
 
 import com.amazon.ata.kindlepublishingservice.dao.CatalogDao;
 import com.amazon.ata.kindlepublishingservice.dynamodb.models.CatalogItemVersion;
+import com.amazon.ata.kindlepublishingservice.models.Book;
 import com.amazon.ata.kindlepublishingservice.models.requests.RemoveBookFromCatalogRequest;
 import com.amazon.ata.kindlepublishingservice.models.response.RemoveBookFromCatalogResponse;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -25,10 +26,13 @@ public class RemoveBookFromCatalogActivity {
 
     public RemoveBookFromCatalogResponse execute(final RemoveBookFromCatalogRequest request) {
         // todo: mt1
-        CatalogItemVersion catalogItem = catalogDao.removeBookFromCatalog(request.getBookId());
+        // CatalogItemVersion catalogItem = catalogDao.removeBookFromCatalog(request.getBookId());
 
-        // todo: need to finish implementing the RemoveBookFromCatalogResponse class
+        Book book = null;
+        // use the dao and request to get the deleted book for the response object below
 
-        return null;
+        return RemoveBookFromCatalogResponse.builder()
+                .withBook(book)
+                .build();
     }
 }

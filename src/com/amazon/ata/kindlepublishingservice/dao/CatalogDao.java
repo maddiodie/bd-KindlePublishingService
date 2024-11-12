@@ -45,18 +45,15 @@ public class CatalogDao {
 
 
     public void removeBookFromCatalog(String bookId) {
-        // todo: mt1
         CatalogItemVersion book = getLatestVersionOfBook(bookId);
 
-        if (book == null) {
-            throw new BookNotFoundException(String
-                    .format("No book found for id: %s", bookId));
+        if (book != null && !book.isInactive()) {
+            book.setInactive(true);
+            dynamoDbMapper.save(book);
+        } else {
+            throw new BookNotFoundException("Book with ID " + bookId
+                    + " not found or is already marked as inactive.");
         }
-
-        // you could write another method that just gets a book based off of the bookId
-
-        // todo
-        //  using a dynamodb object, update the book just fetched to false for isActive
     }
 
     // returns null if no version exists for the provided bookId

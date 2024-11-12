@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -29,6 +30,12 @@ public class CatalogDaoTest {
 
     @Mock
     private PaginatedQueryList<CatalogItemVersion> list;
+
+    @Mock
+    private CatalogItemVersion catalogItemVersion;
+
+    @Mock
+    private DynamoDBQueryExpression<CatalogItemVersion> queryExpression;
 
     @Mock
     private DynamoDBMapper dynamoDbMapper;
@@ -126,4 +133,23 @@ public class CatalogDaoTest {
         assertEquals(bookId, queriedItem.getBookId(), "Expected query to look for provided bookId");
         assertEquals(1, requestCaptor.getValue().getLimit(), "Expected query to have a limit set");
     }
+
+    @Test
+    public void removeBookFromCatalog_bookDoesNotExist_throwsException() {
+        String invalidBookId = "invalidBookId";
+        catalogItemVersion = new CatalogItemVersion();
+        catalogItemVersion.setBookId(invalidBookId);
+        queryExpression = new DynamoDBQueryExpression()
+                .withHashKeyValues(catalogItemVersion)
+                .withScanIndexForward(false)
+                .withLimit(1);
+
+
+        when(dynamoDbMapper.query(queryExpression)).thenReturn(null);
+
+        assertThrows(BookNotFoundException.class, () -> {
+            catalogDao.removeBookFromCatalog(invalidBookId);
+        });
+    }
+
 }
