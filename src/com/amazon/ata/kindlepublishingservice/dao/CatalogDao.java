@@ -56,6 +56,7 @@ public class CatalogDao {
         }
     }
 
+
     // returns null if no version exists for the provided bookId
     private CatalogItemVersion getLatestVersionOfBook(String bookId) {
         CatalogItemVersion book = new CatalogItemVersion();

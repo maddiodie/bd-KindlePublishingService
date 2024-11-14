@@ -8,12 +8,17 @@ import com.amazon.ata.kindlepublishingservice.publishing.KindleFormattedBook;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedQueryList;
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+
+import javax.xml.catalog.Catalog;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -22,20 +27,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CatalogDaoTest {
 
     @Mock
     private PaginatedQueryList<CatalogItemVersion> list;
-
-    @Mock
-    private CatalogItemVersion catalogItemVersion;
-
-    @Mock
-    private DynamoDBQueryExpression<CatalogItemVersion> queryExpression;
 
     @Mock
     private DynamoDBMapper dynamoDbMapper;
@@ -135,21 +133,78 @@ public class CatalogDaoTest {
     }
 
     @Test
-    public void removeBookFromCatalog_bookDoesNotExist_throwsException() {
+    public void removeBookFromCatalog_bookDoesNotExist_throwsException() throws BookNotFoundException {
+        // arrange
         String invalidBookId = "invalidBookId";
-        catalogItemVersion = new CatalogItemVersion();
-        catalogItemVersion.setBookId(invalidBookId);
-        queryExpression = new DynamoDBQueryExpression()
-                .withHashKeyValues(catalogItemVersion)
-                .withScanIndexForward(false)
-                .withLimit(1);
 
+        // mock
+        PaginatedQueryList<CatalogItemVersion> paginatedQueryListMock = Mockito.mock(PaginatedQueryList.class);
+        paginatedQueryListMock.clear();
 
-        when(dynamoDbMapper.query(queryExpression)).thenReturn(null);
+        when(dynamoDbMapper.query(eq(CatalogItemVersion.class), any(DynamoDBQueryExpression.class)))
+                .thenReturn(paginatedQueryListMock);
 
+        // act & assert
         assertThrows(BookNotFoundException.class, () -> {
             catalogDao.removeBookFromCatalog(invalidBookId);
         });
+
+        // verify
+        verify(dynamoDbMapper, never()).save(any(CatalogItemVersion.class));
+
     }
 
+    @Test
+    public void removeBookFromCatalog_bookIsAlreadyInactive_throwsException() throws BookNotFoundException {
+        // arrange
+        String bookId = "bookId";
+        CatalogItemVersion mockedVersion = new CatalogItemVersion();
+        mockedVersion.setBookId(bookId);
+        mockedVersion.setInactive(true);
+
+        // mock
+        PaginatedQueryList<CatalogItemVersion> paginatedQueryListMock = Mockito.mock(PaginatedQueryList.class);
+        when(paginatedQueryListMock.size()).thenReturn(1);
+        when(paginatedQueryListMock.get(0)).thenReturn(mockedVersion);
+
+        when(dynamoDbMapper.query(eq(CatalogItemVersion.class), any(DynamoDBQueryExpression.class)))
+                .thenReturn(paginatedQueryListMock);
+
+        // act & assert
+        assertThrows(BookNotFoundException.class, () -> {
+            catalogDao.removeBookFromCatalog(bookId);
+        });
+
+        // verify
+        verify(dynamoDbMapper, never()).save(any(CatalogItemVersion.class));
+    }
+
+    @Test
+    public void removeBookFromCatalog_bookIsActive_bookIsMarkedAsInactive() {
+        // arrange
+        String validBookId = "validBookId";
+        CatalogItemVersion mockedVersion = new CatalogItemVersion();
+        mockedVersion.setBookId(validBookId);
+        mockedVersion.setInactive(false);
+
+        // mock
+        PaginatedQueryList<CatalogItemVersion> paginatedQueryListMock = Mockito.mock(PaginatedQueryList.class);
+        when(paginatedQueryListMock.size()).thenReturn(1);
+        when(paginatedQueryListMock.get(0)).thenReturn(mockedVersion);
+
+        when(dynamoDbMapper.query(eq(CatalogItemVersion.class), any(DynamoDBQueryExpression.class)))
+                .thenReturn(paginatedQueryListMock);
+
+        // act
+        catalogDao.removeBookFromCatalog(validBookId);
+
+        // capture
+        ArgumentCaptor<CatalogItemVersion> captor = ArgumentCaptor.forClass(CatalogItemVersion.class);
+        verify(dynamoDbMapper).save(captor.capture());
+
+        // assert capture
+        CatalogItemVersion capturedVersion = captor.getValue();
+        assertTrue(capturedVersion.isInactive());
+    }
+    
 }
