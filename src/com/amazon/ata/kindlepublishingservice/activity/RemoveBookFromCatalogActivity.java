@@ -2,6 +2,7 @@ package com.amazon.ata.kindlepublishingservice.activity;
 
 import com.amazon.ata.kindlepublishingservice.dao.CatalogDao;
 import com.amazon.ata.kindlepublishingservice.dynamodb.models.CatalogItemVersion;
+import com.amazon.ata.kindlepublishingservice.exceptions.BookNotFoundException;
 import com.amazon.ata.kindlepublishingservice.models.Book;
 import com.amazon.ata.kindlepublishingservice.models.requests.RemoveBookFromCatalogRequest;
 import com.amazon.ata.kindlepublishingservice.models.response.RemoveBookFromCatalogResponse;
@@ -24,12 +25,25 @@ public class RemoveBookFromCatalogActivity {
     }
 
 
+    /** Soft deletes a Book from the catalog by marking it as inactive so as not to lose data.
+     *
+     * @param request Request object containing the book ID associated with the book to remove from
+     *                the catalog.
+     * @return Returns the Book that was either soft deleted/marked as inactive or the Book that does
+     * not exist in the catalog ... just returns the Book we're trying to do tings to.
+     */
     public RemoveBookFromCatalogResponse execute(final RemoveBookFromCatalogRequest request) {
-        // todo: mt1
-        // CatalogItemVersion catalogItem = catalogDao.removeBookFromCatalog(request.getBookId());
+        Book book = Book.builder()
+                .withBookId(request.getBookId())
+                .build();
 
-        Book book = null;
-        // use the dao and request to get the deleted book for the response object below
+        try {
+            catalogDao.removeBookFromCatalog(request.getBookId());
+
+        } catch (BookNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("Book was not found or does not exist <3");
+        }
 
         return RemoveBookFromCatalogResponse.builder()
                 .withBook(book)

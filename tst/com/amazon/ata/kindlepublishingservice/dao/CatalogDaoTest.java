@@ -180,7 +180,7 @@ public class CatalogDaoTest {
     }
 
     @Test
-    public void removeBookFromCatalog_bookIsActive_bookIsMarkedAsInactive() {
+    public void removeBookFromCatalog_bookIsActive_returnBookMarkedAsInactive() {
         // arrange
         String validBookId = "validBookId";
         CatalogItemVersion mockedVersion = new CatalogItemVersion();
@@ -206,5 +206,5 @@ public class CatalogDaoTest {
         CatalogItemVersion capturedVersion = captor.getValue();
         assertTrue(capturedVersion.isInactive());
     }
-    
+
 }
