@@ -8,6 +8,13 @@ public class RemoveBookFromCatalogResponse {
 
     private Book book;
 
+    private String message;
+
+    public RemoveBookFromCatalogResponse(String message, Book book) {
+        this.message = message;
+        this.book = book;
+    }
+
     public RemoveBookFromCatalogResponse(Book book) {
         this.book = book;
     }
@@ -16,8 +23,16 @@ public class RemoveBookFromCatalogResponse {
         return book;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
     public void setBook() {
         this.book = book;
+    }
+
+    public void setMessage() {
+        this.message = message;
     }
 
     @Override
@@ -35,6 +50,7 @@ public class RemoveBookFromCatalogResponse {
 
     public RemoveBookFromCatalogResponse(Builder builder) {
         this.book = builder.book;
+        this.message = builder.message;
     }
 
     public static Builder builder() {
@@ -45,10 +61,17 @@ public class RemoveBookFromCatalogResponse {
 
         private Book book;
 
+        private String message;
+
         private Builder(){}
 
         public Builder withBook(Book book) {
             this.book = book;
+            return this;
+        }
+
+        public Builder withMessage(String message) {
+            this.message = message;
             return this;
         }
 

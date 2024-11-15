@@ -39,14 +39,15 @@ public class RemoveBookFromCatalogActivity {
 
         try {
             catalogDao.removeBookFromCatalog(request.getBookId());
-
+            return RemoveBookFromCatalogResponse.builder()
+                    .withBook(book)
+                    .withMessage("Book successfully removed.")
+                    .build();
         } catch (BookNotFoundException e) {
+            System.err.println("Error removing book: " + e.getMessage());
             e.printStackTrace();
-            System.out.println("Book was not found or does not exist <3");
+            throw e;
         }
-
-        return RemoveBookFromCatalogResponse.builder()
-                .withBook(book)
-                .build();
     }
+
 }
