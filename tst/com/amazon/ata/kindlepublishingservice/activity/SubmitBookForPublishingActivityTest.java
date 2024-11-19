@@ -87,4 +87,8 @@ public class SubmitBookForPublishingActivityTest {
         assertEquals("publishing.123", response.getPublishingRecordId(), "Expected response to return a publishing" +
                 "record id.");
     }
+
+    // todo: mt2
+    //  - add unit tests to cover your new code in <SubmitBookForPublishingActivity>
+
 }

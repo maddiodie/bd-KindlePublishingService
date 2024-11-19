@@ -50,7 +50,15 @@ public class SubmitBookForPublishingActivity {
         // TODO: If there is a book ID in the request, validate it exists in our catalog
         // TODO: Submit the BookPublishRequest for processing
 
-        PublishingStatusItem item =  publishingStatusDao.setPublishingStatus(bookPublishRequest.getPublishingRecordId(),
+        // todo: mt2
+        //  - finish the this operation by updating it properly based on the design doc's implementation and diagram
+        //    info
+        //  - integrate it with the newly created <BookPublishRequestManager>
+        //  - with the introduction of the <BookPublishRequestManager>, you need to modify this class so that it not
+        //    only records the request, but also adds the <BookPublishRequest> to the <BookPublishRequestManager> for
+        //    further processing <3
+
+        PublishingStatusItem item = publishingStatusDao.setPublishingStatus(bookPublishRequest.getPublishingRecordId(),
                 PublishingRecordStatus.QUEUED,
                 bookPublishRequest.getBookId());
 

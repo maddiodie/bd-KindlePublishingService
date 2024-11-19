@@ -207,4 +207,12 @@ public class CatalogDaoTest {
         assertTrue(capturedVersion.isInactive());
     }
 
+    // todo: mt2
+    //  - verify that the system allows publishing a new version of an inactive book
+    //  - ensure that the correct behavior occurs when trying to publish a new version of both active and inactive
+    //    books
+    //  - attempts to publish a new version of an inactive book and checks that it succeeds
+    //  - attempts to publish a new version of an active book and check that is also succeeds
+
+
 }

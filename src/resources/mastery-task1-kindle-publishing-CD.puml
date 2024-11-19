@@ -53,7 +53,8 @@ class PublishingStatusDao {
 
 class PublishingStatusItem {
     @DynamoDBHashKey publishingRecordId : String
-    @DynamoDBRangeKey status : PublishingRecordStatus
+    @DynamoDBRangeKey
+    status : PublishingRecordStatus
     - statusMessage : String
     - bookId : String
 }

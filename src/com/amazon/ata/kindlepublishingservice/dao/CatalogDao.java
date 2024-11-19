@@ -76,4 +76,12 @@ public class CatalogDao {
         }
         return results.get(0);
     }
+
+
+    // todo: mt2
+    //  - add new void method <validateBookExists()> which the <SubmitBookForPublishingActivity can call
+    //  - this checks if the provided <bookId> exists in the catalog and throws a <BookNotFoundException> if it doesn't
+    //  - the system should not restrict user from submitting a new version just because the current version is not
+    //    active
+
 }

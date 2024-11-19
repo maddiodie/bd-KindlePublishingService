@@ -1,0 +1,12 @@
+
+    DONE:
+
+
+    DO:
+    - plan and implement <BookPublishRequestManager>
+    - test <BookPublishRequestManager> in <BookPublishRequestManagerTest>
+    - plan and implement the new method in <CatalogDao>
+    - test the new method in <CatalogDao>
+    - plan and implement the new <BookPublishRequestManager> functionality in <SubmitBookForPublishingActivity>
+    - test new functionality in <SubmitBookForPublishingActivity> in new <SubmitBookForPublishingActivityTest>
+    - ensure that <MasteryTaskTwoSubmitBookForPublishingTest> passes fully <3
