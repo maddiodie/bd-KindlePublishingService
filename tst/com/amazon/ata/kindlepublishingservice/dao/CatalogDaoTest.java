@@ -1,5 +1,6 @@
 package com.amazon.ata.kindlepublishingservice.dao;
 
+import com.amazon.ata.kindlepublishingservice.models.Book;
 import com.amazon.ata.recommendationsservice.types.BookGenre;
 import com.amazon.ata.kindlepublishingservice.dynamodb.models.CatalogItemVersion;
 import com.amazon.ata.kindlepublishingservice.exceptions.BookNotFoundException;
@@ -20,11 +21,7 @@ import javax.xml.catalog.Catalog;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -205,6 +202,25 @@ public class CatalogDaoTest {
         // assert capture
         CatalogItemVersion capturedVersion = captor.getValue();
         assertTrue(capturedVersion.isInactive());
+    }
+
+    @Test
+    public void validateBookExists_bookIdExists_nothingHappens() {
+        // given
+        String bookId = "existingBookId";
+
+        when(catalogDao.getBookFromCatalog(bookId)).thenReturn(new CatalogItemVersion());
+
+        // when + then
+        assertDoesNotThrow(() -> catalogDao.validateBookExists(bookId));
+    }
+    // todo: mt2
+    //  this won't work because you're defining the behavior for the wrong method (<getBookFromCatalog()>)
+    //  and you should be defining the behavior for the method you're using that's private !!!
+
+    @Test
+    public void validateBookExists_bookIdDoesNotExist_throwsBookNotFoundException() {
+
     }
 
     // todo: mt2

@@ -44,7 +44,11 @@ public class CatalogDao {
         return book;
     }
 
-
+    /**
+     * Soft deletes (or removes) the given book from the catalog.
+     * @param bookId given bookId of book to be removed form catalog
+     * @throws BookNotFoundException thrown if given bookId not found in catalog
+     */
     public void removeBookFromCatalog(String bookId) throws BookNotFoundException {
         CatalogItemVersion book = getLatestVersionOfBook(bookId);
 
@@ -57,8 +61,11 @@ public class CatalogDao {
         }
     }
 
-
-    // returns null if no version exists for the provided bookId
+    /**
+     * Private method that gets the latest version of the book with the given bookId.
+     * @param bookId given bookId to retrieve the latest version of from the catalog
+     * @return latest version of the given bookId from the catalog
+     */
     private CatalogItemVersion getLatestVersionOfBook(String bookId) {
         CatalogItemVersion book = new CatalogItemVersion();
         book.setBookId(bookId);
@@ -77,10 +84,19 @@ public class CatalogDao {
         return results.get(0);
     }
 
+    /**
+     * Validates whether a book exists by using the <getLatestVersionOfBook()> method and only throwing a
+     * BookNotFoundException if it doesn't exist.
+     * @param bookId used to check which book we are validating
+     * @throws BookNotFoundException thrown if the book with the given bookId does not exist
+     */
+    public void validateBookExists(String bookId) throws BookNotFoundException {
+        if (getBookFromCatalog(bookId) == null) {
+            throw new BookNotFoundException("The given book was not found with the given bookId: " + bookId + ".");
+        }
+    }
 
     // todo: mt2
-    //  - add new void method <validateBookExists()> which the <SubmitBookForPublishingActivity can call
-    //  - this checks if the provided <bookId> exists in the catalog and throws a <BookNotFoundException> if it doesn't
     //  - the system should not restrict user from submitting a new version just because the current version is not
     //    active
 
