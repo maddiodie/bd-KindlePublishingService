@@ -11,12 +11,6 @@ import java.util.Queue;
 @Singleton
 public class BookPublishRequestManager {
 
-    // todo: mt2
-    //  - immediate dagger integration is not necessary until unit tests have been completed ... however,
-    //    we need to prepare his manager for future use with dagger even if it's not currently required
-    //  - as you implement the class, make sure to include constructor parameters for any dependencies and
-    //    annotate the class appropriately for dagger as you go
-
     /**
      * Queue to hold the book publish requests on a first-come-first-serve basis.
      */

@@ -26,12 +26,10 @@ public class PublishingModule {
         return Executors.newScheduledThreadPool(1);
     }
 
-//    @Provides
-//    @Singleton
-//    public BookPublishRequestManager providesBookPublishRequestManager() {
-//        return new BookPublishRequestManager();
-//    }
-    // todo: mt2
-    //  i'm gonna wait on all of this and test the class properly first
+    @Provides
+    @Singleton
+    public BookPublishRequestManager providesBookPublishRequestManager() {
+        return new BookPublishRequestManager();
+    }
 
 }

@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import javax.xml.catalog.Catalog;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,7 +48,8 @@ public class CatalogDaoTest {
     public void getBookFromCatalog_bookDoesNotExist_throwsException() {
         // GIVEN
         String invalidBookId = "notABookID";
-        when(dynamoDbMapper.query(eq(CatalogItemVersion.class), any(DynamoDBQueryExpression.class))).thenReturn(list);
+        when(dynamoDbMapper.query(eq(CatalogItemVersion.class), any(DynamoDBQueryExpression.class)))
+                .thenReturn(list);
         when(list.isEmpty()).thenReturn(true);
 
         // WHEN && THEN
@@ -208,19 +210,33 @@ public class CatalogDaoTest {
     public void validateBookExists_bookIdExists_nothingHappens() {
         // given
         String bookId = "existingBookId";
+        CatalogItemVersion catalogItemVersion = new CatalogItemVersion();
+        catalogItemVersion.setBookId(bookId);
 
-        when(catalogDao.getBookFromCatalog(bookId)).thenReturn(new CatalogItemVersion());
+        when(dynamoDbMapper.query(eq(CatalogItemVersion.class), any(DynamoDBQueryExpression.class)))
+                .thenReturn(list);
+        when(list.isEmpty()).thenReturn(false);
+        when(list.get(0)).thenReturn(catalogItemVersion);
 
         // when + then
         assertDoesNotThrow(() -> catalogDao.validateBookExists(bookId));
     }
-    // todo: mt2
-    //  this won't work because you're defining the behavior for the wrong method (<getBookFromCatalog()>)
-    //  and you should be defining the behavior for the method you're using that's private !!!
 
     @Test
     public void validateBookExists_bookIdDoesNotExist_throwsBookNotFoundException() {
+        // given
+        String bookId = "nonExistingBookId";
+        CatalogItemVersion catalogItemVersion = new CatalogItemVersion();
+        catalogItemVersion.setBookId(null);
 
+        when(dynamoDbMapper.query(eq(CatalogItemVersion.class), any(DynamoDBQueryExpression.class)))
+                .thenReturn(list);
+        when(list.isEmpty()).thenReturn(true);
+
+        // when + then
+        assertThrows(BookNotFoundException.class, () -> {
+            catalogDao.validateBookExists(bookId);
+        });
     }
 
     // todo: mt2
@@ -229,6 +245,5 @@ public class CatalogDaoTest {
     //    books
     //  - attempts to publish a new version of an inactive book and checks that it succeeds
     //  - attempts to publish a new version of an active book and check that is also succeeds
-
 
 }
