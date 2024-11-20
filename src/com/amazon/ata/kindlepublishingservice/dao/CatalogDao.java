@@ -91,7 +91,7 @@ public class CatalogDao {
      * @throws BookNotFoundException thrown if the book with the given bookId does not exist
      */
     public void validateBookExists(String bookId) throws BookNotFoundException {
-        if (getBookFromCatalog(bookId) == null) {
+        if (getLatestVersionOfBook(bookId) == null) {
             throw new BookNotFoundException("The given book was not found with the given bookId: " + bookId + ".");
         }
     }

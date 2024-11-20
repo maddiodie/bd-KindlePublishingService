@@ -96,6 +96,10 @@ public class MasteryTaskTwoSubmitBookForPublishingTests extends IntegrationTestB
             .withTitle(catalogItemVersion.getTitle())
             .build();
 
+
+        System.out.println("Book ID: " + catalogItemVersion.getBookId());
+        // para me para debugging <3
+
         // WHEN
         SubmitBookForPublishingResponse response = COMPONENT.provideSubmitBookForPublishingActivity().execute(submitBookForPublishingRequest);
 
