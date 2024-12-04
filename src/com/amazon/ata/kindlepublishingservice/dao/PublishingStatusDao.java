@@ -79,4 +79,24 @@ public class PublishingStatusDao {
         dynamoDbMapper.save(item);
         return item;
     }
+
+    public List<PublishingStatusItem> getPublishingStatus(String publishingStatusId) {
+        PublishingStatusItem key = new PublishingStatusItem();
+        key.setPublishingRecordId(publishingStatusId);
+        // create key object
+
+        DynamoDBQueryExpression<PublishingStatusItem> queryExpression = new DynamoDBQueryExpression<PublishingStatusItem>()
+                .withHashKeyValues(key);
+        // create query expression
+
+        List<PublishingStatusItem> items =  dynamoDbMapper.query(PublishingStatusItem.class, queryExpression);
+        // execute query
+
+        if (items.isEmpty()) {
+            throw new PublishingStatusNotFoundException("The publishing status for the following ID was not found: " + publishingStatusId);
+        } else {
+            return items;
+        }
+    }
+
 }

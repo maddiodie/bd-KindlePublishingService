@@ -96,8 +96,4 @@ public class CatalogDao {
         }
     }
 
-    // todo: mt2
-    //  - the system should not restrict user from submitting a new version just because the current version is not
-    //    active
-
 }

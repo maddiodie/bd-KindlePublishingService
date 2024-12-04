@@ -7,13 +7,15 @@ import com.amazonaws.services.lambda.runtime.Context;
 import javax.inject.Inject;
 
 public class GetPublishingStatusActivity {
+
     @Inject
     public GetPublishingStatusActivity() {}
 
-    public GetPublishingStatusResponse execute(GetPublishingStatusRequest
-                                                       publishingStatusRequest) {
+    public GetPublishingStatusResponse execute(GetPublishingStatusRequest publishingStatusRequest) {
 
+        // todo: (mt3) implement this activity using <PublishingStatusDao>
 
         return null;
     }
+
 }

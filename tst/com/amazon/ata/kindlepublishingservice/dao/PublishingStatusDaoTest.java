@@ -8,12 +8,15 @@ import com.amazon.ata.kindlepublishingservice.exceptions.PublishingStatusNotFoun
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedQueryList;
+import org.apache.http.conn.util.PublicSuffixList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,8 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 
@@ -35,6 +37,9 @@ public class PublishingStatusDaoTest {
 
     @InjectMocks
     private PublishingStatusDao publishingStatusDao;
+
+    @InjectMocks
+    private PaginatedQueryList paginatedQueryList;
 
     @BeforeEach
     public void setup(){
@@ -102,4 +107,57 @@ public class PublishingStatusDaoTest {
         assertTrue(status.getStatusMessage().contains("Failed due to..."), "If a message is provided it should be" +
                 "included in the status message.");
     }
+
+    @Test
+    public void getPublishingStatus_validPublishingStatusId_returnsListOfItems() {
+        // given
+        String validPublishingStatusId = "validId";
+
+        PublishingStatusItem item1 = new PublishingStatusItem();
+        item1.setPublishingRecordId(validPublishingStatusId);
+        item1.setStatus(PublishingRecordStatus.QUEUED);
+        item1.setBookId("bookId1");
+        item1.setStatusMessage("Publishing queued.");
+
+        PublishingStatusItem item2 = new PublishingStatusItem();
+        item2.setPublishingRecordId(validPublishingStatusId);
+        item2.setStatus(PublishingRecordStatus.QUEUED);
+        item2.setBookId("bookId2");
+        item2.setStatusMessage("Publishing queued.");
+
+        List<PublishingStatusItem> expectedItems = new ArrayList<>();
+        expectedItems.add(item1);
+        expectedItems.add(item2);
+
+        ArgumentCaptor<DynamoDBQueryExpression> requestCaptor = ArgumentCaptor
+                .forClass(DynamoDBQueryExpression.class);
+
+        when(dynamoDbMapper.query(eq(PublishingStatusItem.class), any(DynamoDBQueryExpression.class)))
+                .thenReturn(paginatedQueryList);
+        when(paginatedQueryList.isEmpty()).thenReturn(false);
+        when(paginatedQueryList.get(0)).thenReturn(expectedItems.get(0));
+        when(paginatedQueryList.get(1)).thenReturn(expectedItems.get(0));
+
+        // when
+        List<PublishingStatusItem> actualItems = publishingStatusDao.getPublishingStatus(validPublishingStatusId);
+
+        // then
+        assertEquals(item1, actualItems.get(0));
+        assertEquals(item2, actualItems.get(1));
+
+        verify(dynamoDbMapper).query(eq(PublishingStatusItem.class), requestCaptor.capture());
+        PublishingStatusItem queriedItem1 = (PublishingStatusItem) requestCaptor.getValue().getHashKeyValues();
+
+    }
+
+    @Test
+    public void getPublishingStatus_validPublishingStatusId_returnOneItem() {
+
+    }
+
+    @Test
+    public void getPublishingStatus_invalidPublishingStatusId_throwsPublishingStatusNotFoundException() {
+
+    }
+
 }

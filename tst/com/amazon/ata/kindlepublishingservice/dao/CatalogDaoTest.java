@@ -83,9 +83,11 @@ public class CatalogDaoTest {
         item.setInactive(false);
         item.setBookId(bookId);
         item.setVersion(1);
-        ArgumentCaptor<DynamoDBQueryExpression> requestCaptor = ArgumentCaptor.forClass(DynamoDBQueryExpression.class);
+        ArgumentCaptor<DynamoDBQueryExpression> requestCaptor = ArgumentCaptor
+                .forClass(DynamoDBQueryExpression.class);
 
-        when(dynamoDbMapper.query(eq(CatalogItemVersion.class), any(DynamoDBQueryExpression.class))).thenReturn(list);
+        when(dynamoDbMapper.query(eq(CatalogItemVersion.class), any(DynamoDBQueryExpression.class)))
+                .thenReturn(list);
         when(list.isEmpty()).thenReturn(false);
         when(list.get(0)).thenReturn(item);
 
