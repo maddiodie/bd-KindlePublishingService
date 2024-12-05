@@ -152,7 +152,6 @@ public class CatalogDaoTest {
 
         // verify
         verify(dynamoDbMapper, never()).save(any(CatalogItemVersion.class));
-
     }
 
     @Test

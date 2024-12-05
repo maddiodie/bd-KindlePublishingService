@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,11 +36,11 @@ public class PublishingStatusDaoTest {
     @Mock
     private DynamoDBMapper dynamoDbMapper;
 
-    @InjectMocks
-    private PublishingStatusDao publishingStatusDao;
+    @Mock
+    private PaginatedQueryList paginatedQueryList;
 
     @InjectMocks
-    private PaginatedQueryList paginatedQueryList;
+    private PublishingStatusDao publishingStatusDao;
 
     @BeforeEach
     public void setup(){
@@ -129,35 +130,84 @@ public class PublishingStatusDaoTest {
         expectedItems.add(item1);
         expectedItems.add(item2);
 
-        ArgumentCaptor<DynamoDBQueryExpression> requestCaptor = ArgumentCaptor
-                .forClass(DynamoDBQueryExpression.class);
-
         when(dynamoDbMapper.query(eq(PublishingStatusItem.class), any(DynamoDBQueryExpression.class)))
                 .thenReturn(paginatedQueryList);
         when(paginatedQueryList.isEmpty()).thenReturn(false);
+        when(paginatedQueryList.size()).thenReturn(2);
         when(paginatedQueryList.get(0)).thenReturn(expectedItems.get(0));
-        when(paginatedQueryList.get(1)).thenReturn(expectedItems.get(0));
+        when(paginatedQueryList.get(1)).thenReturn(expectedItems.get(1));
+
+        ArgumentCaptor<DynamoDBQueryExpression> requestCaptor = ArgumentCaptor
+                .forClass(DynamoDBQueryExpression.class);
 
         // when
         List<PublishingStatusItem> actualItems = publishingStatusDao.getPublishingStatus(validPublishingStatusId);
 
         // then
+        assertEquals(2, actualItems.size());
         assertEquals(item1, actualItems.get(0));
         assertEquals(item2, actualItems.get(1));
 
         verify(dynamoDbMapper).query(eq(PublishingStatusItem.class), requestCaptor.capture());
-        PublishingStatusItem queriedItem1 = (PublishingStatusItem) requestCaptor.getValue().getHashKeyValues();
-
+        PublishingStatusItem queriedItem = (PublishingStatusItem) requestCaptor.getValue().getHashKeyValues();
+        assertEquals(validPublishingStatusId, queriedItem.getPublishingRecordId(),
+                "Expected query to look for given <publishingStatusId>.");
     }
 
     @Test
     public void getPublishingStatus_validPublishingStatusId_returnOneItem() {
+        // given
+        String validPublishingStatusId = "anotherValidId";
 
+        PublishingStatusItem item3 = new PublishingStatusItem();
+        item3.setPublishingRecordId(validPublishingStatusId);
+        item3.setStatus(PublishingRecordStatus.QUEUED);
+        item3.setBookId("bookId3");
+        item3.setStatusMessage("Publishing queued.");
+
+        List<PublishingStatusItem> expectedItems = new ArrayList<>();
+        expectedItems.add(item3);
+
+        when(dynamoDbMapper.query(eq(PublishingStatusItem.class), any(DynamoDBQueryExpression.class)))
+                .thenReturn(paginatedQueryList);
+        when(paginatedQueryList.isEmpty()).thenReturn(false);
+        when(paginatedQueryList.size()).thenReturn(1);
+        when(paginatedQueryList.get(0)).thenReturn(expectedItems.get(0));
+
+        ArgumentCaptor<DynamoDBQueryExpression> requestCaptor = ArgumentCaptor
+                .forClass(DynamoDBQueryExpression.class);
+
+        // when
+        List<PublishingStatusItem> actualItems = publishingStatusDao.getPublishingStatus(validPublishingStatusId);
+
+        // then
+        assertEquals(1, actualItems.size());
+        assertEquals(item3, actualItems.get(0));
+
+        verify(dynamoDbMapper).query(eq(PublishingStatusItem.class), requestCaptor.capture());
+        PublishingStatusItem queriedItem = (PublishingStatusItem) requestCaptor.getValue().getHashKeyValues();
+        assertEquals(validPublishingStatusId, queriedItem.getPublishingRecordId(),
+                "Expected query to look for given <publishingStatusId>.");
     }
 
     @Test
     public void getPublishingStatus_invalidPublishingStatusId_throwsPublishingStatusNotFoundException() {
+        // given
+        String invalidBookId = "invalidBookId";
 
+        PaginatedQueryList<PublishingStatusItem> paginatedQueryListMock = Mockito.mock(PaginatedQueryList.class);
+        paginatedQueryListMock.clear();
+
+        when(dynamoDbMapper.query(eq(PublishingStatusItem.class), any(DynamoDBQueryExpression.class)))
+                .thenReturn(paginatedQueryListMock);
+        when(paginatedQueryListMock.isEmpty()).thenReturn(true);
+
+        // when + then
+        assertThrows(PublishingStatusNotFoundException.class, () -> {
+            publishingStatusDao.getPublishingStatus(invalidBookId);
+        });
+
+        verify(dynamoDbMapper, never()).save(any(PublishingStatusItem.class));
     }
 
 }
