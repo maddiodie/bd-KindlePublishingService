@@ -22,7 +22,6 @@ public class PublishingStatusDao {
 
     /**
      * Instantiates a new PublishingStatusDao object.
-     *
      * @param dynamoDbMapper The {@link DynamoDBMapper} used to interact with the
      *                       publishing status table.
      */
@@ -35,7 +34,6 @@ public class PublishingStatusDao {
      * Updates the publishing status table for the given publishingRecordId with the
      * provided publishingRecordStatus. If the bookId is provided it will also be stored
      * in the record.
-     *
      * @param publishingRecordId The id of the record to update
      * @param publishingRecordStatus The PublishingRecordStatus to save into the table.
      * @param bookId The id of the book associated with the request, may be null
@@ -79,4 +77,5 @@ public class PublishingStatusDao {
         dynamoDbMapper.save(item);
         return item;
     }
+
 }

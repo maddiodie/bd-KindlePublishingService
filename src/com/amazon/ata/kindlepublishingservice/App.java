@@ -8,15 +8,19 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class App {
+
     public static final ApplicationComponent component = DaggerApplicationComponent.create();
+
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
 
-        ATAKindlePublishingServiceManager publishingManager = component.provideATAKindlePublishingServiceManager();
+        ATAKindlePublishingServiceManager publishingManager =
+                component.provideATAKindlePublishingServiceManager();
         try {
             publishingManager.start();
         } catch (Exception e) {
             System.out.println(e);
         }
     }
+
 }

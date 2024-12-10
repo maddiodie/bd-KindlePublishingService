@@ -59,6 +59,7 @@ public final class BookPublishRequest {
      * BookPublishRequest builder static inner class.
      */
     public static final class Builder {
+
         private String publishingRecordId;
         private String bookId;
         private String title;
@@ -74,9 +75,8 @@ public final class BookPublishRequest {
         }
 
         /**
-         *  Sets the publishing record id and returns a reference to this Builder to the methods can be chained
-         *  together.
-         *
+         * Sets the publishing record id and returns a reference to this Builder to the
+         * methods can be chained together.
          * @param publishingRecordId The publishing record id to set.
          * @return a reference to this Builder.
          */
@@ -86,9 +86,8 @@ public final class BookPublishRequest {
         }
 
         /**
-         *  Sets the bookId and returns a reference to this Builder to the methods can be chained
-         *  together.
-         *
+         * Sets the bookId and returns a reference to this Builder to the methods can be
+         * chained together.
          * @param bookId The book id to set.
          * @return a reference to this Builder.
          */
@@ -98,9 +97,8 @@ public final class BookPublishRequest {
         }
 
         /**
-         *  Sets the title and returns a reference to this Builder to the methods can be chained
-         *  together.
-         *
+         * Sets the title and returns a reference to this Builder to the methods can be
+         * chained together.
          * @param title The title to set.
          * @return a reference to this Builder.
          */
@@ -110,9 +108,8 @@ public final class BookPublishRequest {
         }
 
         /**
-         *  Sets the author and returns a reference to this Builder to the methods can be chained
-         *  together.
-         *
+         * Sets the author and returns a reference to this Builder to the methods can be
+         * chained together.
          * @param author The author to set.
          * @return a reference to this Builder.
          */
@@ -122,9 +119,8 @@ public final class BookPublishRequest {
         }
 
         /**
-         *  Sets the text and returns a reference to this Builder to the methods can be chained
-         *  together.
-         *
+         * Sets the text and returns a reference to this Builder to the methods can be
+         * chained together.
          * @param text The text to set.
          * @return a reference to this Builder.
          */
@@ -134,9 +130,8 @@ public final class BookPublishRequest {
         }
 
         /**
-         *  Sets the genre and returns a reference to this Builder to the methods can be chained
-         *  together.
-         *
+         * Sets the genre and returns a reference to this Builder to the methods can be
+         * chained together.
          * @param genre The genre to set.
          * @return a reference to this Builder.
          */
@@ -146,12 +141,13 @@ public final class BookPublishRequest {
         }
 
         /**
-         *  Returns a BookPublishRequest built from the parameters previously set.
-         *
+         * Returns a BookPublishRequest built from the parameters previously set.
          * @return a BookPublishRequest with parameters of this Builder.
          */
         public BookPublishRequest build() {
             return new BookPublishRequest(this);
         }
+
     }
+
 }

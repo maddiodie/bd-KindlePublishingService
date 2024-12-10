@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testng.Assert.*;
 
 public class MasteryTaskFourSubmitBookForPublishingTests extends IntegrationTestBase {
+
     private static final Duration GET_EXPECTED_STATUS_BUFFER = Duration.ofMillis(500L);
     private static final int MAX_GET_EXPECTED_STATUS_ATTEMPTS = 10;
     private static final ApplicationComponent COMPONENT = DaggerApplicationComponent.create();
@@ -210,4 +211,5 @@ public class MasteryTaskFourSubmitBookForPublishingTests extends IntegrationTest
             MAX_GET_EXPECTED_STATUS_ATTEMPTS * GET_EXPECTED_STATUS_BUFFER.toMillis()));
         return null;
     }
+
 }

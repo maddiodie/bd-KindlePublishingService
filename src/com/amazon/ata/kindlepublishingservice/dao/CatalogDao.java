@@ -4,6 +4,9 @@ import com.amazon.ata.kindlepublishingservice.dynamodb.models.CatalogItemVersion
 import com.amazon.ata.kindlepublishingservice.exceptions.BookNotFoundException;
 
 import com.amazon.ata.kindlepublishingservice.models.Book;
+import com.amazon.ata.kindlepublishingservice.publishing.KindleFormatConverter;
+import com.amazon.ata.kindlepublishingservice.publishing.KindleFormattedBook;
+import com.amazon.ata.kindlepublishingservice.utils.KindlePublishingUtils;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 
@@ -96,8 +99,37 @@ public class CatalogDao {
         }
     }
 
-    // todo: mt2
-    //  - the system should not restrict user from submitting a new version just because the current version is not
-    //    active
+    /**
+     * Adds a book to the catalog. If the book already exists, it updates the book by incrementing
+     * the version number and marking the previous version as inactive. If the book does not exist, it
+     * creates a new entry with a new bookId and sets the version to 1.
+     * @param book
+     */
+    public void addBookToCatalog(KindleFormattedBook book) {
+        CatalogItemVersion catalogItemVersion = new CatalogItemVersion();
+        catalogItemVersion.setTitle(book.getTitle());
+        catalogItemVersion.setAuthor(book.getAuthor());
+        catalogItemVersion.setText(book.getText());
+        catalogItemVersion.setGenre(book.getGenre());
+        catalogItemVersion.setInactive(false);
+
+        try {
+            CatalogItemVersion latestVersion = getBookFromCatalog(book.getBookId());
+
+            catalogItemVersion.setBookId(latestVersion.getBookId());
+            // set the bookId of the new CatalogItemVersion to the same as the latest version
+            catalogItemVersion.setVersion(latestVersion.getVersion() + 1);
+            // increment the version of the new CatalogItemVersion by 1
+            latestVersion.setInactive(true);
+            dynamoDbMapper.save(latestVersion);
+            // save the latest version of the CatalogItemVersion
+            //  (now marked as inactive to the catalog)
+        } catch (BookNotFoundException e) {
+            catalogItemVersion.setBookId(KindlePublishingUtils.generateBookId());
+            catalogItemVersion.setVersion(1);
+        }
+
+        dynamoDbMapper.save(catalogItemVersion);
+    }
 
 }

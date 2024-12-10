@@ -10,7 +10,7 @@ public final class KindleFormatConverter {
     private KindleFormatConverter(){}
 
     /**
-     * Formats the book fields in the provided publishRequest into their kindle format version.
+     * Formats the book fields in the provided publishRequest into their Kindle format version.
      * @param publishRequest contains information about a book to be published
      * @return returns a kindle formatted book
      */

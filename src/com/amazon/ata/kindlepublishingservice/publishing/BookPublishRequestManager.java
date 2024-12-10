@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * Manages a collection of book publish requests ensuring that requests are processed in teh same order that they
- * are submitted.
+ * Manages a collection of book publish requests ensuring that requests are processed in the
+ * same order that they are submitted.
  */
 @Singleton
 public class BookPublishRequestManager {
@@ -32,8 +32,8 @@ public class BookPublishRequestManager {
     }
 
     /**
-     * Retrieves the next book publish request in line for publishing and returns it. If there are no requests to
-     * publish in the book publish request queue, it returns null.
+     * Retrieves the next book publish request in line for publishing and returns it. If
+     * there are no requests to publish in the book publish request queue, it returns null.
      * @return the next book publish request in the queue
      */
     public BookPublishRequest getBookPublishRequestToProcess() {
