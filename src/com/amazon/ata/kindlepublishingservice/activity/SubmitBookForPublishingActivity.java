@@ -34,7 +34,6 @@ public class SubmitBookForPublishingActivity {
 
     /**
      * Instantiates a new SubmitBookForPublishingActivity object.
-     *
      * @param publishingStatusDao PublishingStatusDao to access the publishing status table.
      */
     @Inject
@@ -47,18 +46,15 @@ public class SubmitBookForPublishingActivity {
 
     /**
      * Submits the book in the request for publishing.
-     *
-     * @param request Request object containing the book data to be published. If the request is updating
-     *                an existing book, then the corresponding book id should be provided. Otherwise, the
-     *                request will be treated as a new book.
+     * @param request Request object containing the book data to be published. If the request is
+     *                updating an existing book, then the corresponding book id should be provided.
+     *                Otherwise, the request will be treated as a new book.
      * @return SubmitBookForPublishingResponse Response object that includes the publishing status id,
      *         which can be used to check the publishing state of the book.
      */
     public SubmitBookForPublishingResponse execute(SubmitBookForPublishingRequest request) {
-        final BookPublishRequest bookPublishRequest = BookPublishRequestConverter.toBookPublishRequest(request);
-
-        // TODO: If there is a book ID in the request, validate it exists in our catalog
-        // TODO: Submit the BookPublishRequest for processing
+        final BookPublishRequest bookPublishRequest = BookPublishRequestConverter
+                .toBookPublishRequest(request);
 
         String bookId = request.getBookId();
 
@@ -70,8 +66,10 @@ public class SubmitBookForPublishingActivity {
         // 1b ...
         bookPublishRequestManager.addBookPublishRequest(bookPublishRequest);
 
-        if (request.getTitle() == null || request.getAuthor() == null || request.getGenre() == null || request.getText() == null) {
-            throw new ValidationException("Any or all of the provided values do not exist or are 'null'. All values must exist.\n"
+        if (request.getTitle() == null || request.getAuthor() == null || request.getGenre() == null
+                || request.getText() == null) {
+            throw new ValidationException("Any or all of the provided values do not exist or are " +
+                    "'null'. All values must exist.\n"
                     + "Title: " + request.getTitle() + "\n"
                     + "Author: " + request.getAuthor() + "\n"
                     + "Genre: " + request.getGenre() + "\n"
@@ -79,7 +77,8 @@ public class SubmitBookForPublishingActivity {
         }
         // 4
 
-        PublishingStatusItem item = publishingStatusDao.setPublishingStatus(bookPublishRequest.getPublishingRecordId(),
+        PublishingStatusItem item = publishingStatusDao.setPublishingStatus(bookPublishRequest
+                        .getPublishingRecordId(),
                 PublishingRecordStatus.QUEUED,
                 bookPublishRequest.getBookId());
         // 3

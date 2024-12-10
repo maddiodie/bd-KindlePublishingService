@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class GetPublishingStatusResponse {
+
     private List<PublishingStatusRecord> publishingStatusHistory;
 
     public GetPublishingStatusResponse(List<PublishingStatusRecord> publishingStatusHistory) {
@@ -42,15 +43,17 @@ public class GetPublishingStatusResponse {
     public static final class Builder {
         private List<PublishingStatusRecord> publishingStatusHistory;
 
-        private Builder() {
+        private Builder() {}
 
-        }
-
-        public Builder withPublishingStatusHistory(List<PublishingStatusRecord> publishingStatusHistoryToUse) {
+        public Builder withPublishingStatusHistory(List<PublishingStatusRecord>
+                                                           publishingStatusHistoryToUse) {
             this.publishingStatusHistory = publishingStatusHistoryToUse;
             return this;
         }
 
-        public GetPublishingStatusResponse build() { return new GetPublishingStatusResponse(this); }
+        public GetPublishingStatusResponse build() {
+            return new GetPublishingStatusResponse(this);
+        }
     }
+
 }

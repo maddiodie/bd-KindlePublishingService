@@ -34,20 +34,23 @@ public class GetPublishingStatusRequest {
         this.publishingRecordId = builder.publishingRecordId;
     }
 
-    public static Builder builder() {return new Builder();}
+    public static Builder builder() {
+        return new Builder();
+    }
 
     public static final class Builder {
         private String publishingRecordId;
 
-        private Builder() {
-
-        }
+        private Builder() {}
 
         public Builder withPublishingRecordId(String publishingRecordIdToUse) {
             this.publishingRecordId = publishingRecordIdToUse;
             return this;
         }
 
-        public GetPublishingStatusRequest build() { return new GetPublishingStatusRequest(this); }
+        public GetPublishingStatusRequest build() {
+            return new GetPublishingStatusRequest(this);
+        }
     }
+
 }

@@ -4,12 +4,15 @@ import com.amazon.ata.kindlepublishingservice.dao.CatalogDao;
 import com.amazon.ata.kindlepublishingservice.dao.PublishingStatusDao;
 import com.amazon.ata.kindlepublishingservice.enums.PublishingRecordStatus;
 
+import javax.inject.Inject;
+
 public class BookPublishTask implements Runnable {
 
     private BookPublishRequestManager bookPublishRequestManager;
     private PublishingStatusDao publishingStatusDao;
     private CatalogDao catalogDao;
 
+    @Inject
     public BookPublishTask(BookPublishRequestManager bookPublishRequestManager,
                            PublishingStatusDao publishingStatusDao, CatalogDao catalogDao) {
         this.bookPublishRequestManager = bookPublishRequestManager;
@@ -28,7 +31,11 @@ public class BookPublishTask implements Runnable {
         // if there are no requests to process, return immediately ...
 
         try {
+            publishingStatusDao.setPublishingStatus(bookPublishRequest.getPublishingRecordId(),
+                    PublishingRecordStatus.IN_PROGRESS, bookPublishRequest.getBookId());
+
             processBookRequest(bookPublishRequest);
+            
             publishingStatusDao.setPublishingStatus(bookPublishRequest.getPublishingRecordId(),
                     PublishingRecordStatus.SUCCESSFUL, bookPublishRequest.getBookId());
         } catch (Exception e) {

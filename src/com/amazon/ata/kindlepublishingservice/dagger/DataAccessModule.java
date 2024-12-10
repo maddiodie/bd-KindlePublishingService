@@ -23,4 +23,5 @@ public class DataAccessModule {
 
         return new DynamoDBMapper(amazonDynamoDBClient);
     }
+
 }

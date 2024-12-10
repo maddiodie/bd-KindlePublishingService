@@ -3,6 +3,7 @@ package com.amazon.ata.kindlepublishingservice.models;
 import java.util.Objects;
 
 public class PublishingStatusRecord {
+
     private String status;
     private String statusMessage;
     private String bookId;
@@ -52,7 +53,9 @@ public class PublishingStatusRecord {
         return Objects.hash(status, statusMessage, bookId);
     }
 
-    public static Builder builder() {return new Builder();}
+    public static Builder builder() {
+        return new Builder();
+    }
 
     public PublishingStatusRecord(Builder builder) {
         this.status = builder.status;
@@ -61,13 +64,12 @@ public class PublishingStatusRecord {
     }
 
     public static final class Builder {
+
         private String status;
         private String statusMessage;
         private String bookId;
 
-        private Builder() {
-
-        }
+        private Builder() {}
 
         public Builder withStatus(String statusToUse) {
             this.status = statusToUse;
@@ -84,6 +86,10 @@ public class PublishingStatusRecord {
             return this;
         }
 
-        public PublishingStatusRecord build() { return new PublishingStatusRecord(this); }
+        public PublishingStatusRecord build() {
+            return new PublishingStatusRecord(this);
+        }
+
     }
+
 }

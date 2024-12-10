@@ -3,13 +3,16 @@ package com.amazon.ata.kindlepublishingservice.dao;
 import com.amazon.ata.kindlepublishingservice.dynamodb.models.PublishingStatusItem;
 import com.amazon.ata.kindlepublishingservice.enums.PublishingRecordStatus;
 import com.amazon.ata.kindlepublishingservice.exceptions.PublishingStatusNotFoundException;
+import com.amazon.ata.kindlepublishingservice.models.PublishingStatusRecord;
 import com.amazon.ata.kindlepublishingservice.utils.KindlePublishingUtils;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 /**
@@ -76,6 +79,30 @@ public class PublishingStatusDao {
         item.setBookId(bookId);
         dynamoDbMapper.save(item);
         return item;
+    }
+
+    public List<PublishingStatusRecord> getPublishingStatusHistory(String publishingRecordId) {
+        PublishingStatusItem queryItem = new PublishingStatusItem();
+        queryItem.setPublishingRecordId(publishingRecordId);
+
+        DynamoDBQueryExpression<PublishingStatusItem> queryExpression =
+                new DynamoDBQueryExpression<PublishingStatusItem>()
+                        .withHashKeyValues(queryItem);
+
+        List<PublishingStatusItem> items = dynamoDbMapper.query(PublishingStatusItem.class,
+                queryExpression);
+
+        List<PublishingStatusRecord> records = new ArrayList<>();
+        for (PublishingStatusItem item : items) {
+            PublishingStatusRecord record = new PublishingStatusRecord(
+                    item.getStatus().toString(),
+                    item.getStatusMessage(),
+                    item.getBookId()
+            );
+            records.add(record);
+        }
+
+        return records;
     }
 
 }
