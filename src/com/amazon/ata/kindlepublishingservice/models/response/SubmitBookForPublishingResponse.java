@@ -3,6 +3,7 @@ package com.amazon.ata.kindlepublishingservice.models.response;
 import java.util.Objects;
 
 public class SubmitBookForPublishingResponse {
+
     private String publishingRecordId;
 
     public SubmitBookForPublishingResponse(String publishingRecordId) {
@@ -30,24 +31,29 @@ public class SubmitBookForPublishingResponse {
         return Objects.hash(publishingRecordId);
     }
 
-    public static Builder builder() {return new Builder();}
+    public static Builder builder() {
+        return new Builder();
+    }
 
     public SubmitBookForPublishingResponse(Builder builder) {
         this.publishingRecordId = builder.publishingRecordId;
     }
 
     public static final class Builder {
+
         private String publishingRecordId;
 
-        private Builder() {
-
-        }
+        private Builder() {}
 
         public Builder withPublishingRecordId(String publishingRecordIdToUse) {
             this.publishingRecordId = publishingRecordIdToUse;
             return this;
         }
 
-        public SubmitBookForPublishingResponse build() { return new SubmitBookForPublishingResponse(this); }
+        public SubmitBookForPublishingResponse build() {
+            return new SubmitBookForPublishingResponse(this);
+        }
+
     }
+
 }

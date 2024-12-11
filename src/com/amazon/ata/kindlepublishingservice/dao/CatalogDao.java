@@ -115,7 +115,8 @@ public class CatalogDao {
 
         try {
             CatalogItemVersion latestVersion = getBookFromCatalog(book.getBookId());
-
+            // checking to see if we need to update or add a new entry
+            // grabs the latest entry of the book if it exists
             catalogItemVersion.setBookId(latestVersion.getBookId());
             // set the bookId of the new CatalogItemVersion to the same as the latest version
             catalogItemVersion.setVersion(latestVersion.getVersion() + 1);

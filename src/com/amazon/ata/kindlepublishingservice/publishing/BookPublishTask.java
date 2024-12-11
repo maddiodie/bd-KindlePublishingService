@@ -23,6 +23,9 @@ public class BookPublishTask implements Runnable {
         this.catalogDao = catalogDao;
     }
 
+    /**
+     * Processes a BookPublishRequest from the BookPublishManager.
+     */
     @Override
     public void run() {
         BookPublishRequest bookPublishRequest =

@@ -9,7 +9,8 @@ public class SubmitBookForPublishingRequest {
     private String text;
     private String genre;
 
-    public SubmitBookForPublishingRequest(String bookId, String title, String author, String text, String genre) {
+    public SubmitBookForPublishingRequest(String bookId, String title, String author, String text,
+                                          String genre) {
         this.bookId = bookId;
         this.title = title;
         this.author = author;

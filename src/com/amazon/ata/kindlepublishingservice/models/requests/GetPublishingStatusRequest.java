@@ -3,6 +3,7 @@ package com.amazon.ata.kindlepublishingservice.models.requests;
 import java.util.Objects;
 
 public class GetPublishingStatusRequest {
+
     private String publishingRecordId;
 
     public GetPublishingStatusRequest(String publishingRecordId) {
@@ -39,6 +40,7 @@ public class GetPublishingStatusRequest {
     }
 
     public static final class Builder {
+
         private String publishingRecordId;
 
         private Builder() {}
@@ -51,6 +53,7 @@ public class GetPublishingStatusRequest {
         public GetPublishingStatusRequest build() {
             return new GetPublishingStatusRequest(this);
         }
+
     }
 
 }
