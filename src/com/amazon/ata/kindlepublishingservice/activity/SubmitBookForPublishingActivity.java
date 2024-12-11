@@ -11,6 +11,7 @@ import com.amazon.ata.kindlepublishingservice.enums.PublishingRecordStatus;
 import com.amazon.ata.kindlepublishingservice.publishing.BookPublishRequest;
 
 import com.amazon.ata.kindlepublishingservice.publishing.BookPublishRequestManager;
+import com.amazon.ata.kindlepublishingservice.publishing.BookPublishTask;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import org.apache.commons.lang3.StringUtils;
@@ -22,26 +23,28 @@ import javax.validation.ValidationException;
  * Implementation of the SubmitBookForPublishingActivity for ATACurriculumKindlePublishingService's
  * SubmitBookForPublishing API.
  *
- * This API allows the client to submit a new book to be published in the catalog or update an existing book.
+ * This API allows the client to submit a new book to be published in the catalog or update an existing
+ * book.
  */
 public class SubmitBookForPublishingActivity {
 
     private PublishingStatusDao publishingStatusDao;
-
     private CatalogDao catalogDao;
-
     private BookPublishRequestManager bookPublishRequestManager;
+    private BookPublishTask bookPublishTask;
 
     /**
      * Instantiates a new SubmitBookForPublishingActivity object.
      * @param publishingStatusDao PublishingStatusDao to access the publishing status table.
      */
     @Inject
-    public SubmitBookForPublishingActivity(PublishingStatusDao publishingStatusDao, CatalogDao catalogDao,
-                                           BookPublishRequestManager bookPublishRequestManager) {
+    public SubmitBookForPublishingActivity(PublishingStatusDao publishingStatusDao, CatalogDao
+            catalogDao, BookPublishRequestManager bookPublishRequestManager, BookPublishTask
+            bookPublishTask) {
         this.publishingStatusDao = publishingStatusDao;
         this.catalogDao = catalogDao;
         this.bookPublishRequestManager = bookPublishRequestManager;
+        this.bookPublishTask = bookPublishTask;
     }
 
     /**
@@ -63,9 +66,6 @@ public class SubmitBookForPublishingActivity {
             // 1a
         }
 
-        // 1b ...
-        bookPublishRequestManager.addBookPublishRequest(bookPublishRequest);
-
         if (request.getTitle() == null || request.getAuthor() == null || request.getGenre() == null
                 || request.getText() == null) {
             throw new ValidationException("Any or all of the provided values do not exist or are " +
@@ -76,6 +76,11 @@ public class SubmitBookForPublishingActivity {
                     + "Text: " + request.getText() + "\n");
         }
         // 4
+
+        // 1b ...
+        bookPublishRequestManager.addBookPublishRequest(bookPublishRequest);
+
+        new Thread(bookPublishTask).start();
 
         PublishingStatusItem item = publishingStatusDao.setPublishingStatus(bookPublishRequest
                         .getPublishingRecordId(),

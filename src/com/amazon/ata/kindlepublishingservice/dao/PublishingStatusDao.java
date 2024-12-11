@@ -109,6 +109,11 @@ public class PublishingStatusDao {
             records.add(record);
         }
 
+        if (records.isEmpty()) {
+            throw new PublishingStatusNotFoundException("No publishing status found for record ID: "
+                    + publishingRecordId);
+        }
+
         return records;
     }
 

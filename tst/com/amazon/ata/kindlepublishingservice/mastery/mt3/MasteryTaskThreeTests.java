@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import static org.testng.Assert.*;
 
 public class MasteryTaskThreeTests extends IntegrationTestBase {
+
     private static final String TCT_STATUS_MESSAGE = "TCT test data created by MasteryTaskThreeTests";
     private static final String SINGLE_STATUS_RECORD_ID = "publishingstatus.tct3_single_status";
     private static final String SINGLE_STATUS_BOOK_ID = "book.tct3_single_status";
