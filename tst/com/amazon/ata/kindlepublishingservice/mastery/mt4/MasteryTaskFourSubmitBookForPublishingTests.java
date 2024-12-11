@@ -31,7 +31,7 @@ public class MasteryTaskFourSubmitBookForPublishingTests extends IntegrationTest
     private static final ApplicationComponent COMPONENT = DaggerApplicationComponent.create();
 
     /**
-     * Ensure the test infra is ready for test run, including creating the client.
+     * Ensures the test info is ready for the tests to run, including the creation of the client.
      */
     @BeforeEach
     public void setup() {

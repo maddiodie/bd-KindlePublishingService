@@ -13,9 +13,8 @@ public class BookPublishRequestConverter {
     private BookPublishRequestConverter() {}
 
     /**
-     * Converts the given {@link SubmitBookForPublishingRequest} object to a {@link BookPublishRequest}. Generates
-     * a publishing record id.
-     *
+     * Converts the given {@link SubmitBookForPublishingRequest} object to a {@link BookPublishRequest}.
+     * Generates a publishing record id.
      * @param request The SubmitBookForPublishing object to convert.
      * @return The converted BookPublishRequest.
      */
@@ -23,11 +22,20 @@ public class BookPublishRequestConverter {
 
         final String publishingRecordId = KindlePublishingUtils.generatePublishingRecordId();
 
+        String bookId = "";
+
+        if (request.getBookId() != null) {
+            // the book id exists
+            bookId = request.getBookId();
+        } else {
+            bookId = KindlePublishingUtils.generateBookId();
+        }
+
         return BookPublishRequest.builder()
             .withPublishingRecordId(publishingRecordId)
             .withText(request.getText())
             .withTitle(request.getTitle())
-            .withBookId(request.getBookId())
+            .withBookId(bookId)
             .withGenre(BookGenre.valueOf(request.getGenre()))
             .withAuthor(request.getAuthor())
             .build();

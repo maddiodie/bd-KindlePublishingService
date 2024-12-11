@@ -10,7 +10,6 @@ import javax.inject.Inject;
 public class BookPublishTask implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(BookPublishTask.class);
-
     private BookPublishRequestManager bookPublishRequestManager;
     private PublishingStatusDao publishingStatusDao;
     private CatalogDao catalogDao;

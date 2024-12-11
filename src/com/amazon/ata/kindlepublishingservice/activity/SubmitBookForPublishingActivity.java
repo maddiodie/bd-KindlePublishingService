@@ -12,6 +12,7 @@ import com.amazon.ata.kindlepublishingservice.publishing.BookPublishRequest;
 
 import com.amazon.ata.kindlepublishingservice.publishing.BookPublishRequestManager;
 import com.amazon.ata.kindlepublishingservice.publishing.BookPublishTask;
+import com.amazon.ata.kindlepublishingservice.utils.KindlePublishingUtils;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import org.apache.commons.lang3.StringUtils;

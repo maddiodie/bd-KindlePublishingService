@@ -108,6 +108,7 @@ public class CatalogDao {
      */
     public void addBookToCatalog(KindleFormattedBook book) {
         CatalogItemVersion catalogItemVersion = new CatalogItemVersion();
+        catalogItemVersion.setBookId(book.getBookId());
         catalogItemVersion.setTitle(book.getTitle());
         catalogItemVersion.setAuthor(book.getAuthor());
         catalogItemVersion.setText(book.getText());
@@ -127,7 +128,8 @@ public class CatalogDao {
             // save the latest version of the CatalogItemVersion
             //  (now marked as inactive to the catalog)
         } catch (BookNotFoundException e) {
-            catalogItemVersion.setBookId(KindlePublishingUtils.generateBookId());
+//            catalogItemVersion.setBookId(KindlePublishingUtils.generateBookId());
+            // put this implementation elsewhere ...
             catalogItemVersion.setVersion(1);
         }
 
