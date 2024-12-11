@@ -9,6 +9,8 @@ import com.amazon.ata.kindlepublishingservice.utils.KindlePublishingUtils;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ import javax.inject.Inject;
  */
 public class PublishingStatusDao {
 
+    private static final Logger logger = LoggerFactory.getLogger(PublishingStatusDao.class);
     private static final String ADDITIONAL_NOTES_PREFIX = " Additional Notes: ";
     private final DynamoDBMapper dynamoDbMapper;
 
@@ -77,6 +80,10 @@ public class PublishingStatusDao {
         item.setStatus(publishingRecordStatus);
         item.setStatusMessage(statusMessage);
         item.setBookId(bookId);
+
+        logger.info("Saving PublishingStatusItem with ID: {}, Status: {}, Book ID: {}, Message: {}",
+                publishingRecordId, publishingRecordStatus, bookId, statusMessage);
+
         dynamoDbMapper.save(item);
         return item;
     }
