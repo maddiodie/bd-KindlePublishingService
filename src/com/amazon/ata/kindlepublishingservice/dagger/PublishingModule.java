@@ -6,6 +6,8 @@ import com.amazon.ata.kindlepublishingservice.publishing.BookPublishRequestManag
 import com.amazon.ata.kindlepublishingservice.publishing.BookPublishTask;
 import com.amazon.ata.kindlepublishingservice.publishing.BookPublisher;
 
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import dagger.Module;
@@ -53,7 +55,11 @@ public class PublishingModule {
     @Provides
     @Singleton
     public DynamoDBMapper provideDynamoDBMapper() {
-        return new DynamoDBMapper(AmazonDynamoDBClientBuilder.defaultClient());
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
+                .withRegion(Regions.US_WEST_2)
+                .build();
+
+        return new DynamoDBMapper(client);
     }
 
 }
